@@ -25,7 +25,6 @@ namespace Uno
         {
             int cursorPosition = Display.DisplaySelection(players, 0, curPlayerIndex, direction);
             ConsoleColor color = ConsoleColor.Black;
-            // R G B Y
             switch (cursorPosition)
             {
                 case 0:
@@ -46,8 +45,6 @@ namespace Uno
 
         public static int DisplaySelection(List<Player> players, int cursorPosition, int curPlayerIndex, int direction)
         {
-
-            // R G B Y
             Hand selectionHand = new Hand();
             selectionHand.AddCard(new Card(ConsoleColor.Red, "Red"));
             selectionHand.AddCard(new Card(ConsoleColor.Green, "Green"));
@@ -82,11 +79,19 @@ namespace Uno
                         {
                             cursorPosition--;
                         }
+                        else
+                        {
+                            cursorPosition = selectionHand.Cards.Count - 1;
+                        }
                         break;
                     case ConsoleKey.RightArrow:
                         if (cursorPosition < selectionHand.Cards.Count - 1)
                         {
                             cursorPosition++;
+                        }
+                        else
+                        {
+                            cursorPosition = 0;
                         }
                         break;
                     case ConsoleKey.Enter:
@@ -99,7 +104,8 @@ namespace Uno
             int selectedOption = -1;
             int cursorPosition = 0;
             List<Card> playerCards = players[curPlayerIndex].GetHand();
-
+            int cardDisplayWidth = DEFAULT_CARD_DISPLAY_WIDTH + 2;
+            int maxCardsPerRow = Math.Max(1, (Console.WindowWidth - 2) / (cardDisplayWidth + 2)); // 2 for gap
 
             while (selectedOption == -1)
             {
@@ -123,11 +129,31 @@ namespace Uno
                         {
                             cursorPosition--;
                         }
+                        else
+                        {
+                            cursorPosition = playerCards.Count - 1;
+                        }
                         break;
                     case ConsoleKey.RightArrow:
                         if (cursorPosition < playerCards.Count - 1)
                         {
                             cursorPosition++;
+                        }
+                        else
+                        {
+                            cursorPosition = 0;
+                        }
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if (cursorPosition >= maxCardsPerRow)
+                        {
+                            cursorPosition -= maxCardsPerRow;
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (cursorPosition + maxCardsPerRow < playerCards.Count)
+                        {
+                            cursorPosition += maxCardsPerRow;
                         }
                         break;
                     case ConsoleKey.Enter:
@@ -215,31 +241,48 @@ namespace Uno
         {
             int width = DEFAULT_CARD_DISPLAY_WIDTH;
             int height = DEFAULT_CARD_DISPLAY_HEIGHT;
+            int cardDisplayWidth = width + 2; // adjust if needed for borders/gaps
+            int maxCardsPerRow = Math.Max(1, (Console.WindowWidth - 2) / (cardDisplayWidth + 2)); // 2 for gap
+
+            int totalCards = playerHand.Cards.Count;
+            int numRows = (int)Math.Ceiling((double)totalCards / maxCardsPerRow);
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.WriteLine();
-            List<StringBuilder> rows = playerHand.ToStrings(width, height);
-            for (int j = 0; j < rows.Count; j++)
+
+            for (int row = 0; row < numRows; row++)
             {
-                StringBuilder row = rows[j];
-                int card_length = row.Length / playerHand.Cards.Count;
-                for (int i = 0; i < playerHand.Cards.Count; i++)
+                int start = row * maxCardsPerRow;
+                int count = Math.Min(maxCardsPerRow, totalCards - start);
+                if (count <= 0) continue;
+
+                var subHand = new Hand(playerHand.Cards.GetRange(start, count));
+                List<StringBuilder> rows = subHand.ToStrings(width, height);
+
+                for (int j = 0; j < rows.Count; j++)
                 {
-                    if (i == cursorPosition)
+                    StringBuilder rowStr = rows[j];
+                    int card_length = rowStr.Length / subHand.Cards.Count;
+                    for (int i = 0; i < subHand.Cards.Count; i++)
                     {
-                        Console.BackgroundColor = ConsoleColor.DarkGray; // need to try different colors
+                        int globalIndex = start + i;
+                        if (globalIndex == cursorPosition)
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                        }
+                        if (playerHand.Cards[globalIndex].color != ConsoleColor.Black)
+                        {
+                            Console.ForegroundColor = playerHand.Cards[globalIndex].color;
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = colors[j % colors.Length];
+                        }
+                        Console.Write(rowStr.ToString().Substring(i * card_length, card_length - 2));
+                        Console.ResetColor();
+                        Console.Write("  ");
                     }
-                    if (playerHand.Cards[i].color != ConsoleColor.Black)
-                    {
-                        Console.ForegroundColor = playerHand.Cards[i].color;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = colors[j % colors.Length]; // will print wildcards and wild draw 4 in rainbow colors
-                    }
-                    Console.Write(row.ToString().Substring(i * card_length, card_length - 2));
-                    Console.ResetColor();
-                    Console.Write("  ");
+                    Console.WriteLine();
                 }
                 Console.WriteLine();
             }
@@ -270,9 +313,9 @@ namespace Uno
             };
             printRainbowMessage(winnerMessage);
             Console.WriteLine();
-            Console.WriteLine($"{player.name} has won the game!"); // or round
+            Console.WriteLine($"{player.name} has won the game!");
             Console.WriteLine();
-            Console.WriteLine("Press any key to exit the game..."); // or to start a new round
+            Console.WriteLine("Press any key to exit the game...");
             Console.ReadKey();
         }
 
@@ -309,8 +352,6 @@ namespace Uno
             };
             printRainbowMessage(unoMessage);
             Console.WriteLine();
-            //Console.WriteLine("Press any key to continue...");
-            //   Console.ReadKey();
         }
     }
 }

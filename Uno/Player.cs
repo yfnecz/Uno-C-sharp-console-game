@@ -12,7 +12,6 @@ namespace Uno
         public Hand playerHand { get; set; }
         public bool saidUno { get; set; }
 
-
         public Player(string playerName)
         {
             name = playerName;
@@ -37,7 +36,6 @@ namespace Uno
         {
             return playerHand.Cards.Count == 0;
         }
-
 
         public List<Card> GetHand()
         {

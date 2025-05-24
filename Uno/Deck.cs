@@ -34,12 +34,11 @@ namespace Uno
                     discardPile.Push(new Card(color, Convert.ToString(i)));
                 }
             }
-            // Shuffle(); will shuffle later in GetTopCard
         }
 
         private void AddSpecialCard(ConsoleColor color)
         {
-            string[] specialCards = { "X", "⮏", "+2"}; 
+            string[] specialCards = { "X", "↩", "+2"}; 
             foreach (string specialCard in specialCards)
             {
                 discardPile.Push(new Card(color, specialCard));

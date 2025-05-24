@@ -26,31 +26,30 @@ namespace Uno
         // height is the number of '|' in ea. of the left and right border
         public virtual List<string> ToStrings(int width, int height)
         {
-            string h = "_";
             string v = "|";
             string f = FaceVal;
 
             List<string> rows = new();
 
-            string topBorder = " " + h.Multiply(width);
+            string topBorder = " " + new string('_', width);
             rows.Add(topBorder); // -1th row
 
-            string topRow = v + f + " ".Multiply(width - f.Length) + v; // 0th row
+            string topRow = v + f + new string(' ', width - f.Length) + v; // 0th row
             rows.Add(topRow);
 
-            string otherRows = v + " ".Multiply(width) + v; // 1th through {height-2}th rows, except {height/2}th row
+            string otherRows = v + new string(' ', width) + v; // 1th through {height-2}th rows, except {height/2}th row
             for (int i = 1; i < height - 1; i++)
             {
                 rows.Add(otherRows);
             }
 
-            string bottomRow = v + "_".Multiply(width - f.Length) + f + v; // {height-1}th row
+            string bottomRow = v + new string('_', width - f.Length) + f + v; // {height-1}th row
             rows.Add(bottomRow);
 
             return rows;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Card otherCard)
             {

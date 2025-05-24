@@ -2,7 +2,6 @@
 
 namespace Uno
 {
-
     public class Hand
     {
         public List<Card> Cards { get; }
@@ -29,7 +28,7 @@ namespace Uno
             }
 
             int gapWidth = 2;
-            string gap = " ".Multiply(gapWidth);
+            string gap = new string(' ', gapWidth);
 
             List<StringBuilder> rows = new();
             for (int i = 0; i < height + 1; i++)
@@ -40,7 +39,8 @@ namespace Uno
             foreach (Card card in Cards)
             {
                 List<string> cardRows = card.ToStrings(width, height);
-                rows[0].Append(cardRows[0] + " " + gap); // + " " since the "_" along the top border of each card don't extend all the way to the right border
+                // + " " since the "_" along the top border of each card don't extend all the way to the right border
+                rows[0].Append(cardRows[0] + " " + gap);
                 for (int i = 1; i < cardRows.Count; i++)
                 {
                     rows[i].Append(cardRows[i] + gap);
