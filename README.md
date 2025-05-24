@@ -1,7 +1,8 @@
 # Uno
 Uno console game in C#
 
-Created using Object Oriented Programming & MVC concept
+Created using Object Oriented Programming & MVC concept.
+TTD, unit tests are in Uno.tests folder.
 
 
 # Here is the class diagram
