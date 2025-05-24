@@ -1,0 +1,91 @@
+@startuml
+
+' Use Arial or another available font
+skinparam defaultFontName "Arial"
+
+namespace Uno {
+    class Card {
+        + Card(ConsoleColor color, string faceVal)
+        + void setSelectedColor(ConsoleColor color)
+        + bool Equals(object? obj)
+        + int GetHashCode()
+        + List<string> ToStrings(int width, int height)
+        + ConsoleColor color
+        + string FaceVal
+        + ConsoleColor selectedColor
+    }
+
+    class Hand {
+        + Hand(List<Card>? cards = null)
+        + void AddCard(Card card)
+        + List<StringBuilder> ToStrings(int width, int height)
+        + List<Card> Cards
+    }
+
+    class Player {
+        + Player(string playerName)
+        + void DrawCard(Card card)
+        + Card PlayCard(int index)
+        + bool PlayerHandEmpty()
+        + List<Card> GetHand()
+        + bool hasUno()
+        + void changeUno()
+        + string name
+        + Hand playerHand
+        + bool saidUno
+    }
+
+    class Deck {
+        + Deck()
+        + Card viewTopCard()
+        + void Shuffle()
+        + virtual Card GetCardFromDeck()
+        + void addToDiscardPile(Card card)
+        - Stack<Card> newDeck
+        - Stack<Card> discardPile
+    }
+
+    class GameManager {
+        + GameManager()
+        + List<Player> getPlayers()
+        + void AskForPlayerNames()
+        + void Play()
+        + Player PlaySpecialCard(ref bool isSpecialCard, Card card, Player player, ref bool skippedTurnTwice, int direction)
+        + Player PlayerTurn()
+        + bool DetermineIfWinner(Player player)
+        + void DistributeCards(List<Player> players)
+        - Deck deck
+        - List<Player> players
+        - int numPlayers
+        + int currPlayerIdx
+        + int direction
+        + Player player
+        + Player? previousPlayer
+    }
+
+    class Display {
+        + static void DisplayCard(Card card)
+        + static void DisplayBoard(List<Player> players, int curPlayerIndex, int cursorPosition, Card topCard, int direction)
+        + static void DisplayPlayerHand(Hand playerHand, int cursorPosition)
+        + static void printRainbowMessage(string[] message)
+        + static void DisplayWinner(Player player)
+        + static void DisplayUno()
+        + static int selectOption(bool cardDrawn, List<Player> players, int curPlayerIndex, Card topCard, int direction)
+        + static int DEFAULT_CARD_DISPLAY_WIDTH
+        + static int DEFAULT_CARD_DISPLAY_HEIGHT
+    }
+}
+
+' Relationships
+Uno.Player "1" *-- "1" Uno.Hand
+Uno.Hand "1" *-- "*" Uno.Card
+Uno.GameManager "1" *-- "1" Uno.Deck
+Uno.GameManager "1" *-- "*" Uno.Player
+Uno.Deck "1" *-- "*" Uno.Card
+
+' Display dependencies
+Uno.Display ..> Uno.Player
+Uno.Display ..> Uno.Hand
+Uno.Display ..> Uno.Card
+
+@enduml
