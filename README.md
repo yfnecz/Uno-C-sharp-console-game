@@ -8,7 +8,7 @@ TTD, unit tests are in Uno.tests folder.
 
 # Here is the class diagram
 
-Display class is "View", Card/Hand/Deck/Player classes are "Model", Display class is "Controller"
+Display class is "View", Card/Hand/Deck/Player classes are "Model", GameManager class is "Controller"
 
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/b0bef7bb-eedc-4530-8f77-4a7599df82d5" />
 
