@@ -191,9 +191,9 @@ namespace Uno
 
                 }
             }
-
             return selectedOption;
         }
+
         public static void DisplayCard(Card card)
         {
             int width = DEFAULT_CARD_DISPLAY_WIDTH;
@@ -268,7 +268,7 @@ namespace Uno
                         int globalIndex = start + i;
                         if (globalIndex == cursorPosition)
                         {
-                            Console.BackgroundColor = ConsoleColor.DarkGray;
+                            Console.BackgroundColor = ConsoleColor.Gray;
                         }
                         if (playerHand.Cards[globalIndex].color != ConsoleColor.Black)
                         {
